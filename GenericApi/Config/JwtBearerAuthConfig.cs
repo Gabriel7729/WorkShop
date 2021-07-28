@@ -14,7 +14,7 @@ namespace GenericApi.Config
     {
         public static IServiceCollection ConfigJwtAuth(this IServiceCollection services, IConfiguration configuration)
         {
-            var key = Encoding.ASCII.GetBytes(configuration["JwtSettings:Key"]);
+            var key = Encoding.ASCII.GetBytes(configuration["JwtSettings:Secret"]);
 
             services.AddAuthentication(options =>
             {

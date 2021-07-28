@@ -21,8 +21,6 @@ namespace GenericApi.Services.Services
 { 
     public interface IUserService : IBaseService<User, UserDto>  {
         Task<AuthenticateResponseDto> GetToken(AuthenticateRequestDto model);
-        Task<IEntityOperationResult<UserDto>> AddUser(UserDto dto);
-        string EncriptPassword(string password);
     }
     public class UserService : BaseService<User, UserDto>, IUserService
     {
@@ -35,14 +33,14 @@ namespace GenericApi.Services.Services
             _jwtSettings = jwtSettings.Value;
         }
 
-        public async Task<IEntityOperationResult<UserDto>> AddUser(UserDto dto)
+        public override async Task<IEntityOperationResult<UserDto>> AddAsync(UserDto dto)
         {
             var validationResult = _validator.Validate(dto);
             if (validationResult.IsValid is false)
                 return validationResult.ToOperationResult<UserDto>();
 
-            User entity = _mapper.Map<User>(dto);
-            entity.Password = EncriptPassword(entity.Password);
+            var entity = _mapper.Map<User>(dto);
+            entity.Password = EncodePassword(dto.Password);
             var entityResult = await _repository.Add(entity);
 
             _mapper.Map(entityResult, dto);
@@ -67,26 +65,22 @@ namespace GenericApi.Services.Services
             if (user is null)
                 return null;
 
-            //TODO: Validate password
+            var isValidPassword = ValidatePassword(user.Password, model.Password);
 
-            if (model.Password == DesEncriptarPassWord(user.Password))
-            {
-                var response = new AuthenticateResponseDto
-                {
-                    Id = user.Id,
-                    UserName = user.UserName,
-                    Name = user.Name,
-                    LastName = user.LastName
-                };
-
-                response.Token = GenerateJwtToken(response);
-
-                return response;
-            }
-            else
-            {
+            if (isValidPassword is false)
                 return null;
-            }
+
+            var response = new AuthenticateResponseDto
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                Name = user.Name,
+                LastName = user.LastName
+            };
+
+            response.Token = GenerateJwtToken(response);
+
+            return response;
 
 
         }
@@ -126,20 +120,17 @@ namespace GenericApi.Services.Services
             return token;
         }
 
-        public string EncriptPassword(string password)
+
+        private bool ValidatePassword(string passwordHash, string password)
         {
-            string result = string.Empty;
-            byte[] encryted = Encoding.Unicode.GetBytes(password);
-            result = Convert.ToBase64String(encryted);
-            return result;
+            bool verified = BCrypt.Net.BCrypt.Verify(password, passwordHash);
+            return verified;
         }
 
-        public string DesEncriptarPassWord(string password)
+        private string EncodePassword(string password)
         {
-            string result = string.Empty;
-            byte[] decryted = Convert.FromBase64String(password);
-            result = Encoding.Unicode.GetString(decryted);
-            return result;
+            string passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
+            return passwordHash;
         }
     }
 }
