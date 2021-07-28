@@ -34,5 +34,12 @@ namespace GenericApi.Controllers
 
             return Ok(response);
         }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public override async Task<IActionResult> Post([FromBody] UserDto dto)
+        {
+            return await base.Post(dto);
+        }
     }
 }

@@ -39,7 +39,7 @@ namespace GenericApi.Services.Services
             if (validationResult.IsValid is false)
                 return validationResult.ToOperationResult<UserDto>();
 
-            var entity = _mapper.Map<User>(dto);
+            User entity = _mapper.Map<User>(dto);
             entity.Password = EncodePassword(dto.Password);
             var entityResult = await _repository.Add(entity);
 

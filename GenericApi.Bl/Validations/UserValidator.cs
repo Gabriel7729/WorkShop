@@ -23,20 +23,16 @@ namespace GenericApi.Bl.Validations
                 .WithMessage("The minimum length for this field is 3");
 
             RuleFor(x => x.MiddleName)
-                .NotEmpty()
-                .WithMessage("The MiddleName's field is required")
                 .MinimumLength(3)
                 .WithMessage("The minimum length for this field is 3");
 
             RuleFor(x => x.SecondLastName)
-                .NotEmpty()
-                .WithMessage("The SecondLastName's field is required")
                 .MinimumLength(3)
                 .WithMessage("The minimum length for this field is 3");
 
             RuleFor(x => x.Gender)
                 .NotEmpty()
-                .WithMessage("The SecondLastName's field is required")
+                .WithMessage("The Gender's field is required")
                 .IsInEnum()
                 .WithMessage("Write a correct value for this field");
 
@@ -61,7 +57,6 @@ namespace GenericApi.Bl.Validations
                 .WithMessage("The Password's field is required")
                 .MinimumLength(4)
                 .WithMessage("The minimum length for the username is 8 characters");
-
 
         }
 	}
