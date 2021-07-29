@@ -31,13 +31,13 @@ namespace GenericApi.Bl.Validations
                 .WithMessage("The minimum length for this field is 3");
 
             RuleFor(x => x.Gender)
-                .NotEmpty()
+                .NotNull()
                 .WithMessage("The Gender's field is required")
                 .IsInEnum()
                 .WithMessage("Write a correct value for this field");
 
             RuleFor(x => x.DocumentType)
-                .NotEmpty()
+                .NotNull()
                 .WithMessage("The DocumentType's field is required")
                 .IsInEnum()
                 .WithMessage("Write a correct value for this field");

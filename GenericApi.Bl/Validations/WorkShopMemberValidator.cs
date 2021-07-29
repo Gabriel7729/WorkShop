@@ -11,7 +11,7 @@ namespace GenericApi.Bl.Validations
 		public WorkShopMemberValidator()
 		{
             RuleFor(x => x.Role)
-                .NotEmpty()
+                .NotNull()
                 .WithMessage("This fields is required")
                 .IsInEnum()
                 .WithMessage("Write a correct value for this field");

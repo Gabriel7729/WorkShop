@@ -11,13 +11,13 @@ namespace GenericApi.Bl.Validations
 		public WorkShopDayValidator()
 		{
             RuleFor(x => x.Day)
-                .NotEmpty()
+                .NotNull()
                 .WithMessage("This fields is required")
                 .IsInEnum()
                 .WithMessage("Write a correct value for this field");
 
             RuleFor(x => x.Mode)
-                .NotEmpty()
+                .NotNull()
                 .WithMessage("This fields is required")
                 .IsInEnum()
                 .WithMessage("Write a correct value for this field");
