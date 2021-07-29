@@ -23,7 +23,6 @@ namespace GenericApi.Bl.Mapper
             CreateMap<WorkShopDay, WorkShopDayDto>().ReverseMap();
 
             CreateMap<WorkShopMember, WorkShopMemberDto>().ReverseMap();
-
         }
     }
 }

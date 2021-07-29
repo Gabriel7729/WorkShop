@@ -132,9 +132,9 @@ namespace GenericApi.Model.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDate = new DateTimeOffset(new DateTime(2021, 7, 27, 15, 18, 38, 876, DateTimeKind.Unspecified).AddTicks(7734), new TimeSpan(0, 0, 0, 0, 0)),
+                            CreatedDate = new DateTimeOffset(new DateTime(2021, 7, 26, 15, 24, 55, 583, DateTimeKind.Unspecified).AddTicks(6357), new TimeSpan(0, 0, 0, 0, 0)),
                             Deleted = false,
-                            Dob = new DateTime(2021, 7, 27, 11, 18, 38, 876, DateTimeKind.Local).AddTicks(9064),
+                            Dob = new DateTime(2021, 7, 26, 11, 24, 55, 583, DateTimeKind.Local).AddTicks(6858),
                             DocumentType = 0,
                             DocumentTypeValue = "00000000000",
                             Gender = 0,

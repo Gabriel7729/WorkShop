@@ -12,7 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace GenericApi.Test
+namespace GenericApi.Services.Test
 {
     public class UserServiceTests
     {
@@ -29,7 +29,7 @@ namespace GenericApi.Test
             #region Repository
 
             var optionsBuilder = new DbContextOptionsBuilder<WorkShopContext>();
-            optionsBuilder.UseInMemoryDatabase("WorkShop2");
+            optionsBuilder.UseInMemoryDatabase("WorkShop");
             var context = new WorkShopContext(optionsBuilder.Options);
 
             IUserRepository respository = new UserRepository(context);
@@ -82,31 +82,17 @@ namespace GenericApi.Test
             Assert.Empty(result.Errors);
         }
 
-        //[Fact]
-        //public async Task ShouldGetAllUserAsync()
-        //{
-        //    //Arrange
-        //    var requestDto = new UserDto
-        //    {
-        //        Name = "Emmanuel",
-        //        MiddleName = "Enrique",
-        //        LastName = "Jimenez",
-        //        SecondLastName = "Pimentel",
-        //        Dob = new System.DateTime(1996, 06, 16),
-        //        DocumentType = Core.Enums.DocumentType.ID,
-        //        DocumentTypeValue = "22500851658",
-        //        Gender = Core.Enums.Gender.MALE,
-        //        UserName = "emmanuel",
-        //        Password = "Hola1234,"
-        //    };
+        [Fact]
+        public async Task ShouldGetAllUserAsync()
+        {
+            //Arrange
 
-        //    //Act
-        //    var result = await _userService.GetAllAsync();
+            //Act
+            var result = await _userService.GetAllAsync();
 
-        //    //Assert
-        //    Assert.True(result.IsSuccess, result.Errors.FirstOrDefault());
-        //    Assert.NotNull(result);
-        //    Assert.Empty(result);
-        //}
+            //Assert
+            Assert.NotEmpty(result);
+
+        }
     }
 }

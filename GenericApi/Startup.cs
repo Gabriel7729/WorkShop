@@ -3,19 +3,11 @@ using GenericApi.Config;
 using GenericApi.Core.Settings;
 using GenericApi.Model.IoC;
 using GenericApi.Services.IoC;
-using Microsoft.AspNet.OData.Extensions;
-using Microsoft.AspNet.OData.Formatter;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.Net.Http.Headers;
-using System;
-using System.Linq;
-using System.Text;
 
 namespace GenericApi
 {
@@ -60,7 +52,7 @@ namespace GenericApi
             #region External Dependencies
 
             services.ConfigSqlServerDbContext(Configuration.GetConnectionString("DefaultConnection"));
-            services.AddControllers(options=> options.EnableEndpointRouting = false)
+            services.AddControllers(options => options.EnableEndpointRouting = false)
                 .ConfigFluentValidation();
             services.ConfigAutoMapper();
             services.ConfigSerilog();

@@ -31,11 +31,11 @@ namespace GenericApi.Model.Contexts
                 {
                     case EntityState.Added:
 
-                        if (entry.Entity.Id > 0)
-                        {
-                            entry.State = EntityState.Modified;
-                            goto case EntityState.Modified;
-                        }
+                        //if (entry.Entity.Id > 0)
+                        //{
+                        //    entry.State = EntityState.Modified;
+                        //    goto case EntityState.Modified;
+                        //}
 
                         entry.Entity.Deleted = false;
                         entry.Entity.CreatedDate = DateTimeOffset.UtcNow;

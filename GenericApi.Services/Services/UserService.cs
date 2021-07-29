@@ -18,42 +18,29 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace GenericApi.Services.Services
-{ 
-    public interface IUserService : IBaseService<User, UserDto>  {
+{
+    public interface IUserService : IBaseService<User, UserDto>
+    {
         Task<AuthenticateResponseDto> GetToken(AuthenticateRequestDto model);
     }
     public class UserService : BaseService<User, UserDto>, IUserService
     {
         private readonly JwtSettings _jwtSettings;
         public UserService(
-            IUserRepository repository, 
-            IMapper mapper, 
-            IValidator<UserDto> validator, IOptions<JwtSettings> jwtSettings) : base(repository, mapper, validator)
+            IUserRepository repository,
+            IMapper mapper,
+            IValidator<UserDto> validator, 
+            IOptions<JwtSettings> jwtSettings) : base(repository, mapper, validator)
         {
             _jwtSettings = jwtSettings.Value;
-        }
-
-        public override async Task<IEntityOperationResult<UserDto>> AddAsync(UserDto dto)
-        {
-            var validationResult = _validator.Validate(dto);
-            if (validationResult.IsValid is false)
-                return validationResult.ToOperationResult<UserDto>();
-
-            User entity = _mapper.Map<User>(dto);
-            entity.Password = EncodePassword(dto.Password);
-            var entityResult = await _repository.Add(entity);
-
-            _mapper.Map(entityResult, dto);
-
-            var result = dto.ToOperationResult();
-            return result;
         }
 
         public async Task<AuthenticateResponseDto> GetToken(AuthenticateRequestDto model)
         {
             var user = await _repository.Query()
                 .Where(x => x.UserName == model.UserName)
-                .Select(x=> new { 
+                .Select(x => new
+                {
                     x.Id,
                     x.UserName,
                     x.Name,
@@ -81,9 +68,39 @@ namespace GenericApi.Services.Services
             response.Token = GenerateJwtToken(response);
 
             return response;
-
-
         }
+
+        public override async Task<IEntityOperationResult<UserDto>> AddAsync(UserDto dto)
+        {
+            var validationResult = _validator.Validate(dto);
+
+            if (validationResult.IsValid is false)
+                return validationResult.ToOperationResult<UserDto>();
+
+            var entity = _mapper.Map<User>(dto);
+
+            entity.Password = EncodePassword(dto.Password);
+
+            var entityResult = await _repository.Add(entity);
+
+            _mapper.Map(entityResult, dto);
+
+            var result = dto.ToOperationResult();
+            return result;
+        }
+
+        private bool ValidatePassword(string passwordHash, string password)
+        {
+            bool verified = BCrypt.Net.BCrypt.Verify(password, passwordHash);
+            return verified;
+        }
+
+        private string EncodePassword(string password)
+        {
+            string passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
+            return passwordHash;
+        }
+
         private string GenerateJwtToken(AuthenticateResponseDto user)
         {
             var key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
@@ -92,7 +109,7 @@ namespace GenericApi.Services.Services
 
             var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256Signature);
 
-            var claimsIdentity = new ClaimsIdentity(new[] { 
+            var claimsIdentity = new ClaimsIdentity(new[] {
                 new Claim("id", user.Id.ToString()),
                 new Claim("username",user.UserName)
             });
@@ -103,7 +120,7 @@ namespace GenericApi.Services.Services
                 { "lastName", user.LastName },
             };
 
-            var description  = new SecurityTokenDescriptor
+            var description = new SecurityTokenDescriptor
             {
                 Subject = claimsIdentity,
                 Claims = claims,
@@ -118,19 +135,6 @@ namespace GenericApi.Services.Services
             var token = handler.WriteToken(securityToken);
 
             return token;
-        }
-
-
-        private bool ValidatePassword(string passwordHash, string password)
-        {
-            bool verified = BCrypt.Net.BCrypt.Verify(password, passwordHash);
-            return verified;
-        }
-
-        private string EncodePassword(string password)
-        {
-            string passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
-            return passwordHash;
         }
     }
 }
